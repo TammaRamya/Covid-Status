@@ -1,0 +1,134 @@
+
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewreport" contents="width=device-width,initial-scale=1.0">
+<title>Covid19 page</title>
+<body>
+<h1>Covid19</h1>
+<style>
+th{background-color:Yellow;}
+td{background-color:pink;}
+</style>
+<input type="text" name="" id="myInput" placeholder="Enter country name" onkeyup="searchFun()">
+<table id='table' border="1">
+<thread>
+<tr class="header" align=center>
+
+<th style="width:40%;">Country &#9650</th>
+<th style="width:20%;">Date &#9650</th>
+<th style="width:20%;">TotalConfirmed &#9650</th>
+<th style="width:20%;">TotalDeaths &#9650</th>
+<th style="width:40%;">TotalRecovered &#9650</th>
+</tr>
+</thread>
+</table>
+<script>
+function load()
+{
+console.log('Window Loaded...');
+fetch("https://api.covid19api.com/summary")
+.then(result=>result.json())
+.then(json=>show(json.Countries))
+}
+function show(Count){
+let table=document.getElementById('table');
+for(let i=0; i< Count.length ;i++)
+{
+let obj=Count[i];
+console.log(obj);
+let row=document.createElement('tr');
+let name=document.createElement('td');
+let na=document.createElement('td');
+let recove=document.createElement('td');
+let de=document.createElement('td');
+let d=document.createElement('td');
+
+name.innerHTML=obj.Country
+na.innerHTML=obj.Date
+recove.innerHTML=obj.TotalConfirmed
+de.innerHTML=obj.TotalDeaths
+d.innerHTML=obj.TotalRecovered
+row.appendChild(name)
+row.appendChild(na)
+row.appendChild(recove)
+row.appendChild(de)
+row.appendChild(d)
+table.appendChild(row)
+}
+}
+window.onload=load
+
+const searchFun=()=>{
+let filter=document.getElementById('myInput').value.toUpperCase();
+let mytable=document.getElementById('table');
+let tr=table.getElementsByTagName('tr');
+for(var j=0; j<tr.length;j++){
+let td=tr[j].getElementsByTagName('td')[0];
+if(td){
+let textvalue=td.textcontent||td.innerHTML;
+if(textvalue.toUpperCase().indexOf(filter)>-1){
+tr[j].style.display="";
+}
+else{
+tr[j].style.display="None";
+}
+}
+}
+}
+
+th = document.getElementsByTagName('th');
+
+for(let c=0; c < th.length; c++){
+
+    th[c].addEventListener('click',item(c))
+}
+
+
+function item(c){
+
+    return function(){
+      console.log(c)
+      sortTable(c)
+    }
+}
+
+
+function sortTable(c) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("table");
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[c];
+      y = rows[i + 1].getElementsByTagName("TD")[c];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+</script>
+</body>
+</html>
